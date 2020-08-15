@@ -1,4 +1,4 @@
-package com.gregkluska.restaurantmvvm.api
+package com.gregkluska.restaurantmvvm.api.main.responses
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

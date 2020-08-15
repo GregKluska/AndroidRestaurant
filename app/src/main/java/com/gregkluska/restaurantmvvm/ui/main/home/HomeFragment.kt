@@ -27,12 +27,8 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        homeViewModel.getDishes().observe(viewLifecycleOwner, Observer { response ->
-            when(response) {
-                is ApiSuccessResponse -> {
-                    Log.d(TAG, "Success API response ${response.body}")
-                }
-            }
+        homeViewModel.getDishes().observe(viewLifecycleOwner, Observer { resource ->
+            Log.d(TAG, "onCreateView: ${resource.data}")
         })
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_home, container, false)

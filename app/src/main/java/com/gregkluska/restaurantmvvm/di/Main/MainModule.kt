@@ -1,6 +1,9 @@
 package com.gregkluska.restaurantmvvm.di.Main
 
 import com.gregkluska.restaurantmvvm.api.main.MainService
+import com.gregkluska.restaurantmvvm.persistence.AppDatabase
+import com.gregkluska.restaurantmvvm.persistence.DishDao
+import com.gregkluska.restaurantmvvm.persistence.DishOptionDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

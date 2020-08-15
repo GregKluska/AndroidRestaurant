@@ -42,6 +42,15 @@ class DishResponse (
         )
     }
 
+    fun toDish(): Dish {
+        return Dish(
+            id = id,
+            name = name,
+            description = description,
+            image = image
+        )
+    }
+
     override fun toString(): String {
         return "DishResponse(id=$id, name='$name', description='$description', image='$image', options=$options)"
     }

@@ -114,7 +114,9 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
     implementation "androidx.navigation:navigation-runtime:$nav_version"
 
-
     def material_version = "1.3.0-alpha02"
     implementation "com.google.android.material:material:$material_version"
+
+    def cardview_version = "28.0.0"
+    implementation "com.android.support:cardview-v7:$cardview_version"
 }

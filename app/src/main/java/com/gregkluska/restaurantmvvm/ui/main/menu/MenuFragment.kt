@@ -6,10 +6,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.RequestManager
 import com.gregkluska.restaurantmvvm.R
 import com.gregkluska.restaurantmvvm.models.Dish
+import com.gregkluska.restaurantmvvm.ui.main.home.HomeViewModel
+import com.gregkluska.restaurantmvvm.ui.main.home.MenuViewModel
 import com.gregkluska.restaurantmvvm.util.Constants.Companion.DISH_CATEGORIES
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_menu.*
@@ -24,10 +28,7 @@ class MenuFragment : Fragment(), MenuRecyclerAdapter.Interaction {
     @Inject
     lateinit var requestManager: RequestManager
     private lateinit var recyclerAdapter: MenuRecyclerAdapter
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    private val viewModel: MenuViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,6 +42,15 @@ class MenuFragment : Fragment(), MenuRecyclerAdapter.Interaction {
 
         initRecyclerView()
         testData()
+        subscribeObservers()
+        viewModel.searchMenuItems("Salads")
+
+    }
+
+    private fun subscribeObservers() {
+        viewModel.dishes.observe(viewLifecycleOwner, Observer {
+            Log.d(TAG, "subscribeObservers: ${it.data}")
+        })
     }
 
     private fun initRecyclerView() {

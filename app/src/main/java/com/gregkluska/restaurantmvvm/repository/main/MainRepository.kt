@@ -73,4 +73,50 @@ constructor(
         }.asLiveData()
     }
 
+    fun getDishesByCategory(query: String): LiveData<Resource<List<Dish>>> {
+        return object: NetworkBoundResource<List<Dish>, List<DishResponse>>(true, true) {
+            override suspend fun createCacheRequestAndReturn() {
+                TODO("Not yet implemented")
+            }
+
+            override suspend fun handleApiSuccessResponse(response: ApiSuccessResponse<List<DishResponse>>) {
+                Log.d(TAG, "handleApiSuccessResponse: ${response.body}")
+
+                val dishList: ArrayList<Dish> = ArrayList()
+                for(dishResponse in response.body) {
+                    dishList.add(
+                        Dish(
+                            id = dishResponse.id,
+                            name = dishResponse.name,
+                            description = dishResponse.description,
+                            image = dishResponse.image
+                        )
+                    )
+                }
+
+                return onCompleteJob(
+                    Resource.Success(dishList)
+                )
+            }
+
+            override fun createCall(): LiveData<GenericApiResponse<List<DishResponse>>> {
+                return mainService.getDishesByCategory(query)
+            }
+
+            override fun loadFromCache(): LiveData<List<Dish>> {
+                return AbsentLiveData.create()
+            }
+
+            override suspend fun updateLocalDb(cacheObject: List<Dish>?) {
+
+            }
+
+            override fun setJob(job: Job) {
+                repositoryJob?.cancel()
+                repositoryJob = job
+            }
+
+        }.asLiveData()
+    }
+
 }

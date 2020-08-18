@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.gregkluska.restaurantmvvm.R
-import com.gregkluska.restaurantmvvm.util.ApiSuccessResponse
 import dagger.hilt.android.AndroidEntryPoint
 
 private const val TAG = "AppDebug"
@@ -18,10 +17,6 @@ private const val TAG = "AppDebug"
 class HomeFragment : Fragment() {
 
     private val homeViewModel: HomeViewModel by viewModels()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

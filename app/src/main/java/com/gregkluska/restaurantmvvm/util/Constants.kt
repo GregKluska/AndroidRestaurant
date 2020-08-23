@@ -7,16 +7,7 @@ class Constants {
 
         const val NETWORK_TIMEOUT = 10000L
         const val TESTING_NETWORK_DELAY = 0L // fake network delay for testing
-        const val TESTING_CACHE_DELAY = 0L // fake cache delay for testing
 
-        val DISH_CATEGORIES = listOf(
-            "Appeteasers",
-            "Fino sides",
-            "Peri-peri chicken",
-            "Sharing platters",
-            "Dessert",
-            "Salads"
-        )
     }
 
 }

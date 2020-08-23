@@ -14,7 +14,6 @@ import com.gregkluska.restaurantmvvm.R
 import com.gregkluska.restaurantmvvm.models.Dish
 import com.gregkluska.restaurantmvvm.ui.main.home.HomeViewModel
 import com.gregkluska.restaurantmvvm.ui.main.home.MenuViewModel
-import com.gregkluska.restaurantmvvm.util.Constants.Companion.DISH_CATEGORIES
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_menu.*
 import javax.inject.Inject
@@ -41,7 +40,6 @@ class MenuFragment : Fragment(), MenuRecyclerAdapter.Interaction {
         super.onViewCreated(view, savedInstanceState)
 
         initRecyclerView()
-        testData()
         subscribeObservers()
         viewModel.searchMenuItems("Salads")
 
@@ -64,20 +62,6 @@ class MenuFragment : Fragment(), MenuRecyclerAdapter.Interaction {
 
             adapter = recyclerAdapter
         }
-    }
-
-    private fun testData() {
-        val testList: ArrayList<Dish> = ArrayList<Dish>()
-        for(category in DISH_CATEGORIES) {
-            val dish: Dish = Dish(
-                id = Random.nextInt(0,100),
-                name = category,
-                description = null,
-                image = "https://loremflickr.com/320/240/${category.toLowerCase().replace("\\s".toRegex(), "")}"
-            )
-            testList.add(dish)
-        }
-        recyclerAdapter.submitList(testList)
     }
 
     override fun onItemSelected(position: Int, item: Dish) {

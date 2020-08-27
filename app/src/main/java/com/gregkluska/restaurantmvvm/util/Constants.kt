@@ -10,14 +10,6 @@ class Constants {
 
         const val ERROR_UNKNOWN = "UNKNOWN ERROR, TRY AGAIN."
 
-        val DISH_CATEGORIES = listOf(
-            "Appeteasers",
-            "Fino sides",
-            "Peri-peri chicken",
-            "Sharing platters",
-            "Dessert",
-            "Salads"
-        )
     }
 
 }

@@ -17,5 +17,4 @@ class HomeViewModel
         return repository.getDishes()
     }
 
-
 }

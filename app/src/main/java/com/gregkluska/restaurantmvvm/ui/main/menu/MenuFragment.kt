@@ -14,7 +14,6 @@ import com.gregkluska.restaurantmvvm.R
 import com.gregkluska.restaurantmvvm.models.Dish
 import com.gregkluska.restaurantmvvm.ui.main.home.HomeViewModel
 import com.gregkluska.restaurantmvvm.ui.main.home.MenuViewModel
-import com.gregkluska.restaurantmvvm.util.Constants.Companion.DISH_CATEGORIES
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_menu.*
@@ -44,7 +43,7 @@ class MenuFragment : Fragment(), MenuRecyclerAdapter.Interaction {
 
         initRecyclerView()
         subscribeObservers()
-        testData()
+        menuViewModel.executeCategories()
 
     }
 
@@ -52,6 +51,14 @@ class MenuFragment : Fragment(), MenuRecyclerAdapter.Interaction {
         Log.d(TAG, "subscribeObservers: called")
         menuViewModel.dishes.observe(viewLifecycleOwner, Observer {
             Log.d(TAG, "subscribeObservers: ${it.data}")
+        })
+        
+        menuViewModel.categories.observe(viewLifecycleOwner, Observer {
+            Log.d(TAG, "subscribeObservers: ${it.data}")
+        })
+        
+        menuViewModel.viewState.observe(viewLifecycleOwner, Observer {
+            Log.d(TAG, "subscribeObservers: $it")
         })
     }
 
@@ -69,22 +76,12 @@ class MenuFragment : Fragment(), MenuRecyclerAdapter.Interaction {
     }
 
     private fun testData() {
-        val testList: ArrayList<Dish> = ArrayList<Dish>()
-        for(category in DISH_CATEGORIES) {
-            val dish: Dish = Dish(
-                id = Random.nextInt(0,100),
-                name = category,
-                description = null,
-                image = "https://loremflickr.com/320/240/${category.toLowerCase().replace("\\s".toRegex(), "")}"
-            )
-            testList.add(dish)
-        }
-        recyclerAdapter.submitList(testList)
+//        recyclerAdapter.submitList(testList)
     }
 
     override fun onItemSelected(position: Int, item: Dish) {
         Log.d(TAG, "onItemSelected: Item at position $position has been clicked")
-        menuViewModel.searchMenuItems("salad")
+        menuViewModel.searchMenuItems(item.name)
     }
 
 }

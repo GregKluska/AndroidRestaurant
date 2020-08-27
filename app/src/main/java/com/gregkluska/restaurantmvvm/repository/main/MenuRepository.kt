@@ -7,6 +7,7 @@ import androidx.lifecycle.observe
 import com.gregkluska.restaurantmvvm.api.main.MainService
 import com.gregkluska.restaurantmvvm.api.main.responses.DishResponse
 import com.gregkluska.restaurantmvvm.models.Dish
+import com.gregkluska.restaurantmvvm.models.DishCategory
 import com.gregkluska.restaurantmvvm.repository.NetworkBoundResource
 import com.gregkluska.restaurantmvvm.util.AbsentLiveData
 import com.gregkluska.restaurantmvvm.util.ApiSuccessResponse
@@ -26,11 +27,10 @@ constructor(
 
     private var repositoryJob: Job? = null
 
-    fun getDishes(): LiveData<Resource<List<Dish>>> {
+    fun getDishes(categoryName: String? = null): LiveData<Resource<List<Dish>>> {
         return object: NetworkBoundResource<List<Dish>, List<DishResponse>>(){
             override suspend fun handleApiSuccessResponse(response: ApiSuccessResponse<List<DishResponse>>) {
                 Log.d(TAG, "handleApiSuccessResponse: ${response}")
-
                 val dishList: ArrayList<Dish> = ArrayList()
                 for(dishResponse in response.body) {
                     dishList.add(
@@ -49,7 +49,9 @@ constructor(
             }
 
             override fun createCall(): LiveData<GenericApiResponse<List<DishResponse>>> {
-                return mainService.getDishes()
+                return categoryName?.let { category ->
+                    mainService.getDishesByCategory(category)
+                }?:mainService.getDishes()
             }
 
             override fun setJob(job: Job) {
@@ -60,8 +62,25 @@ constructor(
         }.asLiveData()
     }
 
-    fun getDishesByCategory(query: String): LiveData<Resource<List<Dish>>> {
-        return AbsentLiveData.create()
+    fun getCategories(): LiveData<Resource<List<DishCategory>>> {
+        return object: NetworkBoundResource<List<DishCategory>, List<DishCategory>>(){
+            override suspend fun handleApiSuccessResponse(response: ApiSuccessResponse<List<DishCategory>>) {
+                Log.d(TAG, "handleApiSuccessResponse: ${response}")
+                onCompleteJob(
+                    Resource.Success(response.body)
+                )
+            }
+
+            override fun createCall(): LiveData<GenericApiResponse<List<DishCategory>>> {
+                return mainService.getCategories()
+            }
+
+            override fun setJob(job: Job) {
+                repositoryJob?.cancel()
+                repositoryJob = job
+            }
+
+        }.asLiveData()
     }
 
 }

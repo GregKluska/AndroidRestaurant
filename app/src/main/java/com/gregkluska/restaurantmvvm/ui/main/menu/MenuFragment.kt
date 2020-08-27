@@ -12,13 +12,13 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.RequestManager
 import com.gregkluska.restaurantmvvm.R
 import com.gregkluska.restaurantmvvm.models.Dish
-import com.gregkluska.restaurantmvvm.ui.main.home.HomeViewModel
+import com.gregkluska.restaurantmvvm.models.DishCategory
 import com.gregkluska.restaurantmvvm.ui.main.home.MenuViewModel
+import com.gregkluska.restaurantmvvm.ui.main.menu.MenuRecyclerAdapter.Companion.CATEGORY_TYPE
+import com.gregkluska.restaurantmvvm.ui.main.menu.MenuRecyclerAdapter.Companion.DISH_TYPE
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_menu.*
 import javax.inject.Inject
-import kotlin.random.Random
 
 private const val TAG = "AppDebug"
 
@@ -49,17 +49,21 @@ class MenuFragment : Fragment(), MenuRecyclerAdapter.Interaction {
 
     private fun subscribeObservers() {
         Log.d(TAG, "subscribeObservers: called")
-        menuViewModel.dishes.observe(viewLifecycleOwner, Observer {
-            Log.d(TAG, "subscribeObservers: ${it.data}")
-        })
-        
         menuViewModel.categories.observe(viewLifecycleOwner, Observer {
             Log.d(TAG, "subscribeObservers: ${it.data}")
+            it.data?.let{ categoryList ->
+                recyclerAdapter.submitDishCategoryList(categoryList)
+            }
         })
-        
-        menuViewModel.viewState.observe(viewLifecycleOwner, Observer {
-            Log.d(TAG, "subscribeObservers: $it")
+
+        menuViewModel.dishes.observe(viewLifecycleOwner, Observer {
+            Log.d(TAG, "subscribeObservers: ${it.data}")
+            it.data?.let{ dishList ->
+                recyclerAdapter.submitDishList(dishList)
+            }
         })
+
+
     }
 
     private fun initRecyclerView() {
@@ -70,6 +74,19 @@ class MenuFragment : Fragment(), MenuRecyclerAdapter.Interaction {
                 requestManager,
                 this@MenuFragment
             )
+
+            layoutManager.spanSizeLookup = object: GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int): Int {
+                    Log.d(TAG, "getSpanSize: ${recyclerAdapter.getItemViewType(position)}")
+                    when (recyclerAdapter.getItemViewType(position)) {
+                        CATEGORY_TYPE -> return 1
+                        DISH_TYPE -> return 2
+                    }
+                    return 1
+                }
+            }
+
+
             this.layoutManager = layoutManager
             adapter = recyclerAdapter
         }
@@ -79,9 +96,12 @@ class MenuFragment : Fragment(), MenuRecyclerAdapter.Interaction {
 //        recyclerAdapter.submitList(testList)
     }
 
-    override fun onItemSelected(position: Int, item: Dish) {
-        Log.d(TAG, "onItemSelected: Item at position $position has been clicked")
+    override fun onDishCategorySelected(position: Int, item: DishCategory) {
         menuViewModel.searchMenuItems(item.name)
+    }
+
+    override fun onDishSelected(position: Int, item: Dish) {
+        Log.d(TAG, "onDishSelected: $item")
     }
 
 }

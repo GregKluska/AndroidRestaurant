@@ -1,4 +1,4 @@
-package com.gregkluska.restaurantmvvm.di.Main
+package com.gregkluska.restaurantmvvm.di.main
 
 import com.gregkluska.restaurantmvvm.api.main.MainService
 import dagger.Module

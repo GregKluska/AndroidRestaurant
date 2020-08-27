@@ -9,7 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.gregkluska.restaurantmvvm.api.main.responses.DishResponse
 import com.gregkluska.restaurantmvvm.models.Dish
-import com.gregkluska.restaurantmvvm.repository.main.MainRepository
+import com.gregkluska.restaurantmvvm.repository.main.MenuRepository
 import com.gregkluska.restaurantmvvm.util.GenericApiResponse
 import com.gregkluska.restaurantmvvm.util.Resource
 import com.gregkluska.restaurantmvvm.util.Resource.*
@@ -19,14 +19,14 @@ private const val TAG = "AppDebug"
 class MenuViewModel
 @ViewModelInject
 constructor(
-    private val repository: MainRepository
+    private val repository: MenuRepository
 ): ViewModel() {
 
     private val _viewState: MutableLiveData<ViewState> = MutableLiveData()
     private val _dishes: MediatorLiveData<Resource<List<Dish>>> = MediatorLiveData()
 
     // query vars
-    private var query: String? = null
+    private var query: String? = "aaaa"
 
     val viewState: LiveData<ViewState>
         get() = _viewState
@@ -39,16 +39,17 @@ constructor(
     }
 
     fun searchMenuItems(query: String) {
-        this.query = query
+//        this.query = query
         executeSearch()
     }
 
     private fun executeSearch() {
         query?.let{ categoryName ->
             _viewState.value = ViewState.DISHES
-            val repositorySource = repository.getDishesByCategory(categoryName)
-            _dishes.addSource(repositorySource, Observer {
-                when(it) {
+            val repositorySource = repository.getDishes()
+            
+            _dishes.addSource(repositorySource) {
+                when (it) {
                     is Success -> {
                         Log.d(TAG, "executeSearch: Success, query: ${this.query}")
                         Log.d(TAG, "executeSearch: Response: ${it.data}")
@@ -57,16 +58,15 @@ constructor(
                     }
 
                     is Loading -> {
-                        Log.e(TAG, "executeSearch: Loading..." )
-                        _dishes.removeSource(repositorySource)
+                        Log.e(TAG, "executeSearch: Loading...")
                     }
 
                     is Error -> {
-                        Log.e(TAG, "executeSearch: Error." )
+                        Log.e(TAG, "executeSearch: Error.")
                         _dishes.removeSource(repositorySource)
                     }
                 }
-            })
+            }
         }
     }
 
